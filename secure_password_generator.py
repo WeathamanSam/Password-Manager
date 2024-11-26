@@ -24,7 +24,6 @@ class RandomPasswordGenerator:
         self.lowercase_var = BooleanVar(value=True)
         self.digits_var = BooleanVar(value=True)
         self.symbols_var = BooleanVar(value=True)
-        self.exclude_ambiguous_var = BooleanVar(value=False)
         self.password_generated_var = BooleanVar(value=False)
         
         # Creates boundary buffers
@@ -78,6 +77,7 @@ class RandomPasswordGenerator:
         # Creates textbox where passwords will be generated and displayed
         self.password_entry = ttk.Entry(mainframe, width=20)
         self.password_entry.grid(column=6, row=4, columnspan=2)
+        self.password_entry.config(state='readonly')
         
         # Creates button for passwords allowing the user to generate, show, copy, and display strength
         self.generate_password_button = ttk.Button(mainframe, text="Generate", command=self.generate_password)
@@ -158,12 +158,13 @@ class RandomPasswordGenerator:
             return "           GOOD"
         elif entropy < 80:
             return "          STRONG"
-        elif entropy < 90:
-            return "     VERY STRONG"
         else:
-            return "  STUPID STRONG"
+            return "     VERY STRONG"
         
     def generate_password(self):
+        
+        # Resets password entry for new generation
+        self.password_entry.config(state='normal')
         
         # Enables "Show" and "Copy" buttons
         self.password_generated_var.set(True)
@@ -187,6 +188,7 @@ class RandomPasswordGenerator:
         password = ''.join(random.choice(combined_chars) for _ in range(length))
         self.password_entry.delete(0, END)
         self.password_entry.insert(0, password)
+        self.password_entry.config(state='readonly')
         self.password_entry.config(show="*")
         
         # Sets the password strength of the password
@@ -199,4 +201,4 @@ class RandomPasswordGenerator:
 
 root = Tk()
 RandomPasswordGenerator(root)
-root.mainloop()                     
+root.mainloop()                   
